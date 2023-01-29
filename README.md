@@ -2,7 +2,10 @@
 主要為開發民宿爬蟲使用，目標是給予一間民宿的網址跟特定日期，爬取該天是否有空房
 
 ## Tech Stack
-nodejs, request, cheerio
+- Nodejs
+- request, cheerio
+- Express.js
+- Vercel
 
 ## Booking
 以 request 套件 GET HTML後用 cheerio 解析 body  
@@ -40,3 +43,43 @@ API 初步設計成只抓一天(當然可以的話最好是先計算好怎麼用
 以上一連串嘗試大概花了 3 個小時  
 但學到了怎麼從 Network 看 XHR 的運作，以及模擬發送請求  
 成功打到樂活之後暫時先不研究 Booking.com，先嘗試寫成 API
+
+## API
+使用 Express.js 開發後 deploy 到 Vercel 上  
+#####　GET /api
+單純測試 server 狀況
+```
+It's api of goto-travel.
+```
+
+##### POST /api/twstay
+request body: (台灣宿配網訂房頁面的網址及要查詢的日期)
+```js
+{
+    bnb_url: "https://twstay.com/RWD2/booking.aspx?BNB=shenzhou&OrderType=2",
+    date: "2023/2/28"
+}
+```
+response data: (可使用 hasNoRoom 檢查是否有空房可訂)
+```js
+[
+    {
+        "roomTitle": "4~8人包棟(二房)",
+        "hasNoRoom": "",
+        "roomPrice": "15000",
+        "roomRemain": "1"
+    },
+    {
+        "roomTitle": "6~10人包棟(三房)",
+        "hasNoRoom": "滿",
+        "roomPrice": "",
+        "roomRemain": ""
+    }
+]
+```
+
+
+## Ref
+[Using Express.js with Vercel](https://vercel.com/guides/using-express-with-vercel)  
+在 Vercel 部署 Express 的話似乎必須模仿在 Next.js 裡的 api 結構  
+把 index.js 放在 api folder 裡，然後 routes 要設定 /api 開頭  
