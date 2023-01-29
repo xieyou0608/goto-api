@@ -1,6 +1,6 @@
 // 存放表單的固定資訊
 // 必須附帶底線開頭的資料才能拿到渲染好的 html
-export const twstayForm = {
+const twstayForm = {
   // BNB: "morningbnb",
   // OrderType: 2,
   // ctl00$sm1: "ctl00$up1|ctl00$ContentPlaceHolder1$btnSearchDate",
@@ -33,3 +33,5 @@ export const twstayForm = {
     "/wEdACd/PqVsAgZgbywG96x078NU7NUs7dMUigNur03dsSIErP94bjsHc+8EOXckZKMOFGk6Lwvc0XoVMcFpk9iszLKcXJQRpk3aqg09orMp7UiIVORAl6g3AGprCqPp/KO1m2SAMHTS/iJvtlgWXtNgV8XOgUJ+9RV7SDACjjfN84jDCPeOxpLI2vj7MbX/QEjjbtXNgdsOCfknNSJqmIBbKR1jZcxZW80TS87aPqiDsLpmR9k7zf2Prn71+l5LorKSwOhpiw5qQ3IDlnalAE5RtgTuJ2xcYa2rDA8vv2AvS0yjNKhclw3jyMezOk6J9BzmEiWU01weA0FB/lSR7TlpI3kfH7UiAvpOUSc2Zjr7VV+PKvkZnpDfdfXQrv0biwHiB0ve9w2lpm0txFrGuB//q1x46xme0+i0X+Zl9E7NyfWBlr2J2SlJy8uEmwJeAYrk0xslG6P82uEqH5pVwTbudAjb0P2JiT4xXkzDu/kx4hzMNW8ONMz99IPNhKSsdk9Hp1w2CboC8etKNTwv1rBWpJaD15dyTZ/7xj6orMJzym0eYW2XhhQ2Bx8oq3/8YwjmJWo2Y6/ubbzEUYB0Lh8lCAA2axasSqgdgSLaWTBcAix+tHmfmCTSVkIk0AVWm2bWbIKulPAHjBnxXlZPid10SPcNerG1oT5iraRmhIiZIAe+H5NBYYXmY0Xm6sRED/Jt8X8MjjcAJ1oTIvlXSn3eiBkpC0xthQl+MDbu41De8nGfNstO3lUL6UkgW5LF5j0zxmzbyNCWWaaOJkX1qIUJgY3ur12rCKyOs6A8LexkKVtQ2Cz4A2qmucwi9cW6X0cAGCC569tUhMfsnGILx2lQhkMPw6T/Un4kGKerL1O/lgQ1kQ==",
   __ASYNCPOST: true,
 };
+
+module.exports = twstayForm;
