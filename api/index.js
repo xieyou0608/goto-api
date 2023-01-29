@@ -10,11 +10,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // routes
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   res.send("It's api of goto-travel.");
 });
 
-app.post("/twstay", async (req, res) => {
+app.post("/api/twstay", async (req, res) => {
   console.log("A request is coming into /twstay");
   const { bnb_url, date } = req.body;
   console.log(bnb_url, date);
