@@ -83,3 +83,12 @@ response data: (可使用 hasNoRoom 檢查是否有空房可訂)
 [Using Express.js with Vercel](https://vercel.com/guides/using-express-with-vercel)  
 在 Vercel 部署 Express 的話似乎必須模仿在 Next.js 裡的 api 結構  
 把 index.js 放在 api folder 裡，然後 routes 要設定 /api 開頭  
+
+
+## 更新
+如何拿到民宿名字
+先 GET 一次拿完整的 html，在 head 的 title 拿名字
+然後再做 POST
+
+前端 打 API 拿到資料
+後端 
