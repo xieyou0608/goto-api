@@ -23,6 +23,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+app.get("/", (req, res) => {
+  res.status(301).redirect("https://goto-travel.vercel.app/");
+});
+
 // routes
 app.get("/api", (req, res) => {
   res.send("It's api of goto-travel.");
