@@ -2,13 +2,13 @@ version: "3.9"
 services:
   # frontend: (deploy to vercel)
   #   build: ./goto-travel
-  #   image: xieyou/goto-travel:latest
+  #   image: xieyou0608/goto-travel:latest
   #   ports:
   #     - 8085:80
   #   container_name: run_frontend
   backend:
     build: ./
-    image: xieyou/goto-api:latest
+    image: xieyou0608/goto-api:latest
     ports:
       - 80:3000
     depends_on:
