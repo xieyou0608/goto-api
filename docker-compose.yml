@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  # frontend: (deploy to vercel)
+  #   build: ./goto-travel
+  #   image: xieyou/goto-travel:latest
+  #   ports:
+  #     - 8085:80
+  #   container_name: run_frontend
+  backend:
+    build: ./
+    image: xieyou/goto-api:latest
+    ports:
+      - 80:3000
+    depends_on:
+      - mongo_db
+    container_name: run_backend
+    environment:
+      MONGO_URI: mongodb://mongo_db:27017/gotodb
+  mongo_db:
+    image: mongo
+    container_name: mongo_database
+    restart: always
+    ports:
+      - 27015:27017
+    volumes:
+      - /home/ubuntu/ebsvolume/data/db:/data/db # ebsvolume is the folder on EC2 which mount to formatted EBS

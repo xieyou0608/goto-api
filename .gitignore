@@ -15,3 +15,5 @@ lerna-debug.log*
 
 .env
 
+# docker mount volume
+tmp
