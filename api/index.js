@@ -69,7 +69,22 @@ app.get("/api/trip/:tripId", async (req, res) => {
       };
     });
 
-    res.send({ ...tripData._doc, bnbs: transformedBnbs });
+    const transformedMembers = {};
+    tripData.members.map((member) => {
+      const { username, datesVote } = member;
+      const transformedDatesVote = {};
+      datesVote.map((v) => {
+        const { date, vote } = v;
+        transformedDatesVote[date] = vote;
+      });
+      transformedMembers[username] = { datesVote: transformedDatesVote };
+    });
+
+    res.send({
+      ...tripData._doc,
+      bnbs: transformedBnbs,
+      members: transformedMembers,
+    });
   } catch (err) {
     res.status(500).send(err);
   }
@@ -81,18 +96,20 @@ app.post("/api/trip/:tripId/members", async (req, res) => {
   const { username } = req.body;
   try {
     const tripData = await Trip.findById(tripId);
-    const datesVote = {};
+    const datesVote = [];
     tripData.availableDates.forEach((date) => {
-      datesVote[date] = "";
+      datesVote.push({ date, vote: "" });
     });
-
-    if (tripData.members) {
-      tripData.members[username] = { datesVote };
-    } else {
-      tripData.members = { [username]: { datesVote } };
-    }
+    tripData.members.push({ username, datesVote });
     await tripData.save();
-    res.send({ [username]: { datesVote } });
+
+    // transform and send to frontend
+    const transformedDatesVote = {};
+    datesVote.map((v) => {
+      const { date, vote } = v;
+      transformedDatesVote[date] = vote;
+    });
+    res.send({ [username]: { datesVote: transformedDatesVote } });
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
@@ -100,15 +117,28 @@ app.post("/api/trip/:tripId/members", async (req, res) => {
 });
 
 // user vote on dates
-app.patch("/api/trip/:tripId/members/:userName", async (req, res) => {
-  const { tripId, userName } = req.params;
+app.patch("/api/trip/:tripId/members/:username", async (req, res) => {
+  const { tripId, username } = req.params;
+  console.log(username);
   const { datesVote } = req.body;
+  const transformedDatesVote = Object.keys(datesVote).map((date) => ({
+    date,
+    vote: datesVote[date],
+  }));
+  console.log(transformedDatesVote);
+
   try {
     const tripData = await Trip.findById(tripId);
-    tripData.members[userName].datesVote = datesVote;
+    const idx = tripData.members.findIndex(
+      (member) => member.username === username
+    );
+    console.log(idx);
+    console.log(tripData.members);
+    tripData.members[idx].datesVote = transformedDatesVote;
     await tripData.save();
     res.send("Successfully updated.");
   } catch (error) {
+    console.log(error);
     res.status(500).send("Something went wrong!");
   }
 });
@@ -132,7 +162,6 @@ app.post("/api/trip/:tripId/bnbs", async (req, res) => {
     // get bnb rooms
     await Promise.all(
       dates.map(async (date) => {
-        // bnb.rooms[date] = [];
         const oneDayRoomsList = [];
         try {
           const data = await twstayCrawler(bookingUrl, date);

@@ -36,7 +36,18 @@ const tripSchema = new mongoose.Schema({
     default: [],
   },
   members: {
-    type: Object,
+    type: [
+      {
+        username: String,
+        datesVote: [
+          {
+            date: String,
+            vote: String,
+          },
+        ],
+      },
+    ],
+    default: [],
   },
 });
 
