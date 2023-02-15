@@ -53,7 +53,23 @@ app.get("/api/trip/:tripId", async (req, res) => {
   const { tripId } = req.params;
   try {
     const tripData = await Trip.findById(tripId);
-    res.send(tripData);
+    const transformedBnbs = {};
+    tripData.bnbs.map((bnb) => {
+      const transformedRooms = {};
+      bnb.rooms.map((room) => {
+        const { date, roomsList } = room;
+        transformedRooms[date] = roomsList;
+      });
+
+      const { bnbId, name, url } = bnb;
+      transformedBnbs[bnbId] = {
+        name,
+        url,
+        rooms: transformedRooms,
+      };
+    });
+
+    res.send({ ...tripData._doc, bnbs: transformedBnbs });
   } catch (err) {
     res.status(500).send(err);
   }
@@ -69,7 +85,7 @@ app.post("/api/trip/:tripId/members", async (req, res) => {
     tripData.availableDates.forEach((date) => {
       datesVote[date] = "";
     });
-    console.log(tripData);
+
     if (tripData.members) {
       tripData.members[username] = { datesVote };
     } else {
@@ -106,15 +122,18 @@ app.post("/api/trip/:tripId/bnbs", async (req, res) => {
   try {
     // get bnb name
     const bnbName = await twstayBnbNameGetter(bookingUrl);
-    const bnb = {};
-    bnb.name = bnbName;
-    bnb.url = bookingUrl;
-    bnb.rooms = {};
+    const bnb = {
+      bnbId,
+      name: bnbName,
+      url: bookingUrl,
+      rooms: [],
+    };
 
     // get bnb rooms
     await Promise.all(
       dates.map(async (date) => {
-        bnb.rooms[date] = [];
+        // bnb.rooms[date] = [];
+        const oneDayRoomsList = [];
         try {
           const data = await twstayCrawler(bookingUrl, date);
           data.forEach((room) => {
@@ -126,8 +145,9 @@ app.post("/api/trip/:tripId/bnbs", async (req, res) => {
               roomInfo.roomStatus =
                 room.roomPrice + "元" + room.roomRemain + "間";
             }
-            bnb.rooms[date].push(roomInfo);
+            oneDayRoomsList.push(roomInfo);
           });
+          bnb.rooms.push({ date, roomsList: oneDayRoomsList });
         } catch (error) {
           throw new Error(error);
         }
@@ -136,12 +156,17 @@ app.post("/api/trip/:tripId/bnbs", async (req, res) => {
 
     // Store into database
     const tripData = await Trip.findById(tripId);
-    if (tripData.bnbs) {
-      tripData.bnbs[bnbId] = bnb;
-    } else {
-      tripData.bnbs = { [bnbId]: bnb };
-    }
-    await tripData.save();
+    tripData.bnbs.push(bnb);
+    await tripData.save().catch((e) => {
+      console.log(e);
+    });
+
+    // Transform data and send to frontend
+    const transformedRooms = {};
+    bnb.rooms.map((room) => {
+      transformedRooms[room.date] = room.roomsList;
+    });
+    bnb.rooms = transformedRooms;
 
     res.send(bnb);
   } catch (err) {
